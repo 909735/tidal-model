@@ -1,6 +1,5 @@
-% Config
-%
-% Any important settings that may need to be changed are here
+%%  Config
+%   Central file to change key variables across all code
 
 %% Settings
 
@@ -9,11 +8,11 @@ dataFile = 'StationData.csv';   % Path to file to read data from
 
 % Time and graphing
 t0 = 0;                 % Start time (hours)
-noDays = 14;            % Length of graph in days
+noDays = 01;            % Length of graph in days
 resolution = 30;        % Resolution; Steps per hour
 
 % Assumptions
-maxTurbFlow = 2;        % Coefficient of water discharge though turbs
+disFlow = 0.70;         % Coefficient of water discharge though turbs
 holdTime = 4;           % Time in hours to hold water at high tide
 turbineEff = 0.90;      % Turbine efficiency
 

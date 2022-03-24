@@ -21,10 +21,11 @@ hold on
 % plot(datum(:,1),datum(:,2),'k-.'),
 
 subplot(2,1,2)
-plot(t,hLagoon,'b')
+plot(t,hSea,'k-.')
 ylabel('height from average (m)')
 xlabel('time (hrs)')
 legend('Lagoon height')
 grid on
 hold on
+plot(t,hLagoon,'b')
 % plot(datum(:,1),datum(:,2),'k-.')
