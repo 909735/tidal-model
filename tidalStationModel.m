@@ -1,12 +1,9 @@
-function [tideHeight,tidePowerOut,time] = tidalStationOneWay(area,rangeSpring,rangeNeap,phase)
+function [hSea,tideDailyS,tideVar,t] = tidalStationModel(area,rangeAvg,rangeVar,phase)
 
-%TidalStation1D - 1D model of a single tidal station
+%TidalStationModel - 1D model of a single tidal station
 %
 %   Takes a tidal station's lagoon area, tidal range and tidal phase and 
 %   converts it into a predicted power generation output series. 
-%
-%   If mode = 1, follows an ebb generation pattern
-%   If mode = 2, follows a two-way generation pattern
 % 
 %   The model uses a simple estimation of the
 %   change in potential energy of the water throughout the day, based on
@@ -18,11 +15,11 @@ function [tideHeight,tidePowerOut,time] = tidalStationOneWay(area,rangeSpring,ra
     noDays = 50;
 
 %   Assumptions used in the model
+    holdTime = 4;           % Time in hours to hold water at high tide
     turbineEff = 0.90;      % Turbine efficiency
     tidalDay = 24.83;       % Period between moonrises in hours
-    lunarOrbit = 29.53;     % Period between new moons in days
-    rhoWater = 1000;        % Density of seawater
-%   rhoWater = 1027;
+    lunarOrbit = 29.53;     % Period between new moons in hours
+    rhoWater = 1027;        % Density of seawater
     g = 9.81;               % Gravitational acceleration
 
 %% Time series setup
@@ -32,37 +29,35 @@ function [tideHeight,tidePowerOut,time] = tidalStationOneWay(area,rangeSpring,ra
     tStep = 1/60;
 %   Start and end times
     t0 = 0;                 % Start time
-    t1 = lunarOrbit*24;     % End time after one spring/neap cycle
-    t2 = noDays*24;         % End time after time to show graph for
+    t1 = lunarOrbit*24;     % Time of one spring/neap cycle
+    tEnd = 24*noDays;       % End time to display graph until
 
 %% Calculations
 %   Height travelled by water from centreline
-    hs = avgRange/2;        % Height at spring tide
-    hn = avgRange
+    hA = rangeAvg/2;        % Median tides
+    hS = hA+rangeVar/2;     % At spring tides
+    hN = hA-rangeVar/2;     % At neap tides
     
 %   Offset to add due to phase difference
-    phi = 2*pi*phase/tidalDay;
-%   Mass of water moving
-    waterMass = rhoWater*hs*area;
-    waterEnergy = waterMass*g*hs;
+    Phi = 2*pi*phase/tidalDay;
     
 %   Create a time series
-    time = [t0:tStep:t2]';
+    t = [t0:tStep:tEnd];
     
 %   Adjust to fit frequency of tides
-    t = 4*pi/tidalDay;
+    T = 4*pi/tidalDay;
+%   Adjust to fit frequency of spring/neap cycle
+    L = 4*pi/t1;
     
 %   Daily tidal series, centred around mean water height.
-    tideHeight = hs*sin(t*time+phi);
+    tideDailyS = hS * sin(T*t+Phi);
+    tideDailyN = hN * sin(T*t+Phi);
+    tideDailyA = hA * sin(T*t+Phi);
+    tideVar = (1-hN/hA) * (sin(L*t))+1;
+    hSea = tideDailyA .* tideVar;
     
-    
-%   Series of the difference in potential energy from baseline
-    tideEnergy = waterEnergy*sin(t*time+phi)+waterEnergy;
-    
-%   Series of the max power output, dy/dt(tideEnergy)
-    tidePowerMax = abs(1/3600*t*waterEnergy.*cos(t*time+phi));
-    tidePowerOut = tidePowerMax*turbineEff;
-    %tidePowerAvg = mean(tidePowerAct);
+    tsOneWayEbb
+
     
 %   Call figure drawing script if needed. Moved to multi station script.
     drawFigures1D();

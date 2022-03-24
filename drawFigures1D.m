@@ -3,34 +3,28 @@
 %   A script to draw a few graphs from an individual 1D tidal station.
 %   These are:
 %
-%   1 - Tidal height vs time
-%   2 - Potential energy over time
-%   3 - Projected power outputs over time
+%   1 - Sea height and lagoon height vs time
 
-% figure(1), clf(1),
-plot(time,tideHeight);
-hold on;
-plot(baseline(:,1),baseline(:,2),'k-.'),
-title('Tide height over time')
-xlabel('time (hrs)')
+% Setup
+% Create a dashed line to show mean water
+datum = [t0,0;tEnd,0];
+
+figure(1), clf(1)
+subplot(2,1,1)
+plot(t,hSea,'r')
+title('Sea height over one spring/neap cycle')
 ylabel('height from average (m)')
-
-% Figure 2, tide potential energy over time
-figure(2), clf(2),
-plot(time,tideEnergy),
-hold on;
-plot(baseline(:,1),baseline(:,2),'k-.'),
-title('Tide potential energy over time')
 xlabel('time (hrs)')
-ylabel('energy of water (J)')
+legend('Sea height')
+grid on
+hold on
+% plot(datum(:,1),datum(:,2),'k-.'),
 
-% Figure 3, maximum power output vs expected output over time
-figure(3), clf(3),
-plot(time,tidePowerMax),
-hold on;
-plot(time,tidePowerAct),
-plot(baseline(:,1),baseline(:,2),'k-.'),
-title('Station power output over time')
+subplot(2,1,2)
+plot(t,hLagoon,'b')
+ylabel('height from average (m)')
 xlabel('time (hrs)')
-ylabel('Expected output (W)')
-legend('Max output','Estimated output','location','se')
+legend('Lagoon height')
+grid on
+hold on
+% plot(datum(:,1),datum(:,2),'k-.')
