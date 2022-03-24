@@ -1,65 +1,50 @@
-function [hSea,tideDailyS,tideVar,t] = tidalStationModel(area,rangeAvg,rangeVar,phase)
+function [t,powerOut] = tidalStationModel(stationNo)
+%% TidalStationModel - 1D model of a single tidal station
 
-%TidalStationModel - 1D model of a single tidal station
-%
-%   Takes a tidal station's lagoon area, tidal range and tidal phase and 
+%   Looks up data for a given tidal station number, and 
 %   converts it into a predicted power generation output series. 
-% 
+
+%   Data is in the following format:
+%   Column 1 - Station name
+%   Column 2 - Median tidal range (m) from high to low water
+%   Column 3 - Spring/Neap range deviation from median (m)
+%   Column 4 - Area of tidal lagoon (m^2)
+%   Column 5 - Phase difference (hours)
+
+%   This is run in a function so that it can be easily repeated many times 
+%   for many stations using the same local variables.
+
 %   The model uses a simple estimation of the
 %   change in potential energy of the water throughout the day, based on
 %   the one presented in Sustainable energy - without the hot air (MacKay
 %   D, 2008.).
 
 %% Setup
-%   Days to show graph for
-    noDays = 50;
-
-%   Assumptions used in the model
-    holdTime = 4;           % Time in hours to hold water at high tide
-    turbineEff = 0.90;      % Turbine efficiency
-    tidalDay = 24.83;       % Period between moonrises in hours
-    lunarOrbit = 29.53;     % Period between new moons in hours
-    rhoWater = 1027;        % Density of seawater
-    g = 9.81;               % Gravitational acceleration
-
-%% Time series setup
-%   All times are in hours. 0.5 = 30 mins.
-
-%   Resolution of output.
-    tStep = 1/60;
-%   Start and end times
-    t0 = 0;                 % Start time
-    t1 = lunarOrbit*24;     % Time of one spring/neap cycle
-    tEnd = 24*noDays;       % End time to display graph until
-
-%% Calculations
-%   Height travelled by water from centreline
-    hA = rangeAvg/2;        % Median tides
-    hS = hA+rangeVar/2;     % At spring tides
-    hN = hA-rangeVar/2;     % At neap tides
+%   Apend variables from config file
+    tidalStationConfig;
     
-%   Offset to add due to phase difference
-    Phi = 2*pi*phase/tidalDay;
+%% Import data
     
-%   Create a time series
-    t = [t0:tStep:tEnd];
+%   Import data from a csv file and keep just the numbers
+    stations = importdata(dataFile);
+    stationData = stations.data;
     
-%   Adjust to fit frequency of tides
-    T = 4*pi/tidalDay;
-%   Adjust to fit frequency of spring/neap cycle
-    L = 4*pi/t1;
+%   Get the data entry
+    s = stationNo;
     
-%   Daily tidal series, centred around mean water height.
-    tideDailyS = hS * sin(T*t+Phi);
-    tideDailyN = hN * sin(T*t+Phi);
-    tideDailyA = hA * sin(T*t+Phi);
-    tideVar = (1-hN/hA) * (sin(L*t))+1;
-    hSea = tideDailyA .* tideVar;
+%   Set the parameters to that of the data entry
+    area = stationData(s,3);    % Area
+    range = stationData(s,1);   % Median range 
+    rVar = stationData(s,2);    % Spring/neap range Variation
+    phase = stationData(s,4);   % Phase (hours)
     
-    tsOneWayEbb
-
+%   Run common tidal station setup code
+    tidalStationSetup;
     
-%   Call figure drawing script if needed. Moved to multi station script.
-    drawFigures1D();
+%   Use one way generation model
+    tidalStationOneWayEbb
+    
+%   Power out temp
+    powerOut = 1;
     
 end
