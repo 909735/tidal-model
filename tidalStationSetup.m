@@ -10,14 +10,13 @@
 %%  Time 
     t1 = lunarOrbit*24;             % Time of one spring/neap cycle
     tEnd = 24*noDays;               % End time to display graph until
-    tStep = 1/resolution;           % Time step based on resolution
     
 %   Time indices - No for gate hold time and half daily cycle
-    holdInd = round((holdTime/tStep)-1);
-    dayInd = round(0.5*tidalDay/tStep);
+    holdInd = round((holdTime/dt)-1);
+    dayInd = round(0.5*tidalDay/dt);
     
 %   Create time series
-    t = [t0:tStep:tEnd];
+    t = [t0:dt:tEnd];
     
 %%  Calculating tidal cycles
     

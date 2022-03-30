@@ -8,58 +8,62 @@
 % Find time indicies of high tide
 [Ht,HtInd] = findpeaks(hSea);
 
-% Setup arrays containing gate release times and indicies
-gate = []; gateInd = [];
+% Setup arrays containing gate open/close times and indicies
+gateOpens = [];
+gateCloses = [];
 
+numData = length(hLagoon);
 
 %% Loop to trap water at high tide
 % For every maxima (high tide):
 for i=[1:length(Ht)]
-    ind = HtInd(i);
-    lastHT = Ht(i);
+    HTInd = HtInd(i);   % Current high tide index
+    HTHeight = Ht(i);   % Current high tide height
     
 %   For each point within the hold time after high water
-    for j=[1:holdInd]
-
-%       Check if within bounds
-        if ind+j>length(hLagoon), flag=1; break
-        end
+    for x=[1:holdInd]
+        curInd = HTInd+x;
         
-%       Set as high tide
-        hLagoon(ind+j) = lastHT;
+%       Check if within bounds
+        if curInd>numData, flag=1; break;     
+        end
+        hLagoon(curInd) = HTHeight;
     end
     
 %   Break second loop if out of bounds
     if flag==1, break 
     end
     
-%   Add gate release times to an array
-    gate(i) = lastHT;
-    gateInd(i) = ind+j;
-end
+%   The last index of holding time is the gate open time
+%   Add gate open time to an array
+    gateOpens(i) = HTInd+x;
+end  
 
-
-%% Loop to release water at gate times
-% For every gate release point:
-for k=[1:length(gateInd)]
-    ind = gateInd(k);
+%% Loop to release water at open points
+% For every release point:
+for j=[1:length(gateOpens)]
+    openInd = gateOpens(j);     % Current gate open index
+    openHeight = Ht(j);         % Current gate open height
     
 %   For each point within one cycle of the release point:
-    for X=[1:dayInd]
+    for x=[1:dayInd]
+        curInd = openInd+x;
+        nextHeight = tidalStationFlow(openHeight,x);
         
-%       Next indices set as time function from gate release height
-%       y = c - mx
-        nextHeight = hLagoon(ind) - disFlow*X*tStep;     
-        
-%       Check if within bounds, or next point lower than sea level
-        if ind+X>length(hLagoon), break
-        elseif nextHeight < hSea(ind+X), break
+%       Check index is within data bounds and lagoon is higher than sea
+        if curInd>numData || nextHeight<=hSea(curInd)
+%           Set as a gate closing index
+            gateCloses(j) = curInd; break
+        else
+%           Otherwise, set next point height
+            hLagoon(curInd) = nextHeight;
         end
-        
-%       Set next point
-        hLagoon(ind+X) = nextHeight;
     end
 end
-    
+
+[powerPerArea,deltaH] = tidalStationGenPower(hLagoon,hSea,gateOpens,gateCloses);
+powerIdeal = powerPerArea*area;
+powerAct = powerIdeal*turbEff;
+
 % Draw figures
 tidalStationFigures;
