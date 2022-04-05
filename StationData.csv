@@ -1,7 +1,7 @@
-Location,Median Tidal Range,Sping/Neap Variation,Phase difference (hrs),Area
-Example 1,3,1,0,10
-Example 2,6,2,2,10
-Example 3,4,3,4,10
-Example 4,5,2,6,10
-Example 5,5,1,8,10
-Example 6,4,2,10,10
+Location,Median Tidal Range (m),Sping/Neap Variation (m),Phase difference (hrs),Area (km^2)
+Swansea,3,1,0,11.5
+Example 2,6,2,2,10.0
+Example 3,4,3,4,10.0
+Example 4,5,2,6,10.0
+Example 5,5,1,8,10.0
+Example 6,4,2,10,10.0

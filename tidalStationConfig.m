@@ -8,7 +8,7 @@ dataFile = 'StationData.csv';   % Path to file to read data from
 
 % Time and graphing
 t0 = 0;                 % Start time (hours)
-noDays = 10;            % Length of graph in days
+noDays = 14;            % Length of graph in days
 resolution = 30;        % Resolution; Steps per hour
 
 % Assumptions

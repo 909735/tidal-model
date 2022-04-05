@@ -61,8 +61,8 @@ for j=[1:length(gateOpens)]
     end
 end
 
-[powerPerArea,deltaH] = tidalStationGenPower(hLagoon,hSea,gateOpens,gateCloses);
-powerIdeal = powerPerArea*area;
+[powerPerKm2,deltaH] = tidalStationGenPower(hLagoon,hSea,gateOpens,gateCloses);
+powerIdeal = powerPerKm2*area;
 powerAct = powerIdeal*turbEff;
 
 % Draw figures

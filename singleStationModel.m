@@ -17,10 +17,10 @@ stationNo = 1;
 
 % Initialise data storage
 dataPowerOut = [];      % Power out data store
-dataTime = [];          % Time data store
+dataTime = [];          % Time data store 
 
 % Generate station outputs
 [time,powerOut] = tidalStationModel(stationNo);
-    
+
 % Store the data
 dataPowerOut=[dataPowerOut;powerOut];

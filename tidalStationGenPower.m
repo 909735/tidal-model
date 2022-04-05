@@ -1,4 +1,4 @@
-function [powerPerArea,deltaH] = tidalStationGenPower(lHeight,sHeight,oTimes,cTimes)
+function [MWPerKm2,deltaH] = tidalStationGenPower(lHeight,sHeight,oTimes,cTimes)
 %%  Generate Power
 %   Function to calculate the power output generated from a given lagoon
 %   and sea height.
@@ -54,6 +54,6 @@ for i=[1:cycles]
 end
 
 % Power output per unit area
-powerPerArea = abs(deltaH.*VdotPA*rhoSeawater*g);
+MWPerKm2 = abs(deltaH.*VdotPA*rhoSeawater*g);
 end
 

@@ -33,9 +33,9 @@ function [t,powerOut] = tidalStationModel(stationNo)
     s = stationNo;
     
 %   Set the parameters to that of the data entry
-    area = stationData(s,4);    % Area
-    range = stationData(s,1);   % Median range 
-    rVar = stationData(s,2);    % Spring/neap range Variation
+    area = stationData(s,4);    % Area (km^2)
+    range = stationData(s,1);   % Median range (m)
+    rVar = stationData(s,2);    % Spring/neap range Variation (m)
     phase = stationData(s,3);   % Phase (hours)
     
 %   Run common tidal station setup code
