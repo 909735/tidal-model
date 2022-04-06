@@ -8,15 +8,23 @@
 %   > blank lagoon level series
 
 %%  Time 
-    t1 = lunarOrbit*24;             % Time of one spring/neap cycle
-    tEnd = 24*noDays;               % End time to display graph until
     
-%   Time indices - No for gate hold time and half daily cycle
+%   Start and end times in hours, rounded to nearest dt.
+    t0C=dt*floor(startTimeCalc/dt);t2C=dt*round(24*endDayCalc/dt);
+    t0G=dt*floor(startTimeGraph/dt);t2G=dt*round(24*endDayGraph/dt);
+    
+%   Gate hold time and half daily cycle indices, rounded to nearest dt.
     holdInd = round((holdTime/dt)-1);
     dayInd = round(0.5*tidalDay/dt);
+ 
+% Time of one spring/neap cycle
+    t1 = lunarOrbit*24;             
     
 %   Create time series
-    t = [t0:dt:tEnd];
+    t = [t0C:dt:t2C];
+    
+%   Graph start/end time indices
+    t0GInd=find(t==t0G); t2GInd = find(t==t2G);
     
 %%  Calculating tidal cycles
     
@@ -41,5 +49,5 @@
     hSea = tideDailyM .* tideVar;
     
 %%  Final setup
-    hLagoon = hSea;             % Setup lagoon height as that of sea
+    hLag = hSea;             % Setup lagoon height as that of sea
     flag = 0;                   % Reset break flag, just in case

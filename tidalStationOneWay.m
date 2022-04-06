@@ -1,85 +1,62 @@
-function [tideMonth,tideDailyS,tideVar,time] = tidalStationOneWay(area,rangeAvg,rangeVar,phase)
+%%  Generation Pattern - One-Way Ebb
+%   The model for a one-way ebb generation station.
 
-%TidalStation1D - 1D model of a single tidal station
-%
-%   Takes a tidal station's lagoon area, tidal range and tidal phase and 
-%   converts it into a predicted power generation output series. 
-%
-%   If mode = 1, follows an ebb generation pattern
-%   If mode = 2, follows a two-way generation pattern
-% 
-%   The model uses a simple estimation of the
-%   change in potential energy of the water throughout the day, based on
-%   the one presented in Sustainable energy - without the hot air (MacKay
-%   D, 2008.).
+%   Changes the lagoon height wave to hold water and discharge it as an ebb
+%   generation pattern.
 
-%% Setup
-%   Days to show graph for
-%     noDays = 50;
+%% 
+% Find time indicies of high tide
+[Ht,HtInd] = findpeaks(hSea);
 
-%   Assumptions used in the model
-    turbineEff = 0.90;      % Turbine efficiency
-    tidalDay = 24.83;       % Period between moonrises in hours
-    lunarOrbit = 29.53;     % Period between new moons in hours
-    rhoWater = 1027;        % Density of seawater
-    g = 9.81;               % Gravitational acceleration
+% Setup arrays containing gate open/close times and indicies
+gateOpens = [];
+gateCloses = [];
 
-%% Time series setup
-%   All times are in hours. 0.5 = 30 mins.
+numData = length(hLag);
 
-%   Resolution of output.
-    tStep = 1/60;
-%   Start and end times
-    t0 = 0;                 % Start time
-    t2 = lunarOrbit*24;     % End time after one spring/neap cycle
-    t1 = t2/2;
-%     t2 = noDays*24;         % End time after time to show graph for
-
-%% Calculations
-%   Height travelled by water from centreline
-    hA = rangeAvg/2;        % Median tides
-    hS = hA+rangeVar/2;       % At spring tides
-    hN = hA-rangeVar/2;       % At neap tides
-
-    hR = hN/hS;             % Ratio between neap and spring tides
-
-    varAmp = 1-hN/hA;
+%% Loop to trap water at high tide
+% For every maxima (high tide):
+for i=[1:length(Ht)]
+    HTInd = HtInd(i);   % Current high tide index
+    HTHeight = Ht(i);   % Current high tide height
     
-%   Offset to add due to phase difference
-    Phi = 2*pi*phase/tidalDay;
+%   For each point within the hold time after high water
+    for x=[1:holdInd]
+        curInd = HTInd+x;
+        
+%       Check if within bounds
+        if curInd>numData, flag=1; break;     
+        end
+        hLag(curInd) = HTHeight;
+    end
+    
+%   Break second loop if out of bounds
+    if flag==1, break 
+    end
+    
+%   The last index of holding time is the gate open time
+%   Add gate open time to an array
+    gateOpens(i) = HTInd+x;
+end  
 
-    %{
-%   Mass of water moving
-    waterMass = rhoWater*hs*area;
-    waterEnergy = waterMass*g*hs;
-    %}
+%% Loop to release water at open points
+% For every release point:
+for j=[1:length(gateOpens)]
+    openInd = gateOpens(j);     % Current gate open index
+    openHeight = Ht(j);         % Current gate open height
     
-%   Create a time series
-    time = [t0:tStep:t1];
-    
-%   Adjust to fit frequency of tides
-    T = 4*pi/tidalDay;
-%   Adjust to fit frequency of spring/neap cycle
-    L = 2*pi/t1;
-    
-%   Daily tidal series, centred around mean water height.
-    tideDailyS = hS * sin(T*time+Phi);
-    tideDailyN = hN * sin(T*time+Phi);
-    tideDailyA = hA * sin(T*time+Phi);
-    tideVar = varAmp*(sin(L*time))+1;
-    tideMonth = tideDailyA.*tideVar;
-    
-%{    
-%   Series of the difference in potential energy from baseline
-    tideEnergy = waterEnergy*sin(T*time+Phi)+waterEnergy;
-    
-%   Series of the max power output, dy/dt(tideEnergy)
-    tidePowerMax = abs(1/3600*T*waterEnergy.*cos(T*time+Phi));
-    tidePowerOut = tidePowerMax*turbineEff;
-    %tidePowerAvg = mean(tidePowerAct);
-%}
-    
-%   Call figure drawing script if needed. Moved to multi station script.
-    drawFigures1D();
-    
+%   For each point within one cycle of the release point:
+    for x=[1:dayInd]
+        curInd = openInd+x;
+        nextHeight = tidalStationFlow(openHeight,x);
+        
+%       Check index is within data bounds and lagoon is higher than sea
+        if curInd>numData || nextHeight<=hSea(curInd)
+%           Set as a gate closing index
+            gateCloses(j) = curInd; break
+        else
+%           Otherwise, set next point height
+            hLag(curInd) = nextHeight;
+        end
+    end
 end

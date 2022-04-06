@@ -1,18 +1,35 @@
-function [t,powerOut] = tidalStationModel(stationNo)
+function [t,powerOut,MWh] = tidalStationModel(stationNo)
 %% TidalStationModel - 1D model of a single tidal station
 
 %   Looks up data for a given tidal station number, and 
-%   converts it into a predicted power generation output series. 
+%   converts it into a predicted power generation output series.
+
+%   Outputs:
+%   t - time series
+%   powerOut - power output series
+%   MWh - Cumulative energy out over specified period (same as graphs)
+
+%   Inputs:
+%   stationNo - Data entry number for given station, read from .csv file.
 
 %   Data is in the following format:
 %   Column 1 - Station name
 %   Column 2 - Median tidal range (m) from high to low water
 %   Column 3 - Spring/Neap range deviation from median (m)
-%   Column 4 - Area of tidal lagoon (m^2)
-%   Column 5 - Phase difference (hours)
+%   Column 4 - Phase difference (hours)
+%   Column 5 - Area of tidal lagoon (m^2)
 
-%   This is run in a function so that it can be easily repeated many times 
-%   for many stations using the same local variables.
+%   This model is run inside a function to keep all values local for each
+%   station.
+
+%   Most calculations are done in sub script and function files. These are:
+%     tidalStationConfig - Sets up properties used by many scripts
+%     tidalStationSetup - Generates time and sea height series
+%     tidalStationOneWay - Lagoon height using one way generation
+%     tidalStationTwoWay - Lagoon height using two way generation
+%     tidalStationGenPower - Power output using sea/lagoon h difference
+%       tidalStationFlow - Function modelling water flow rate
+%     tidalStationFigures - Produces plots of the sites' data
 
 %   The model uses a simple estimation of the
 %   change in potential energy of the water throughout the day, based on
@@ -42,9 +59,18 @@ function [t,powerOut] = tidalStationModel(stationNo)
     tidalStationSetup;
     
 %   Use one way generation model
-    tidalStationOneWayEbb
+    tidalStationOneWay;
     
-%   Power out temp
-    powerOut = 1;
+%   Calculate power output over time using lagoon/sea height, gate opens/closes
+    [powerPerKm2,deltaH] = tidalStationGenPower(hLag,hSea,gateOpens,gateCloses);
     
+%   Adjust for area and turbine efficiency
+    powerIdeal = powerPerKm2*area;
+    powerOut = powerIdeal*turbEff;
+    
+%   Cumulative power produced out
+    MWh = 1;
+    
+%   Draw figures
+    tidalStationFiguresSingle;
 end

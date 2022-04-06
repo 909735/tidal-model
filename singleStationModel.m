@@ -9,18 +9,17 @@
 
 %% Setup
 
-% Read the config file
-tidalStationConfig;
-
 % Data entry
 stationNo = 1;
 
 % Initialise data storage
-dataPowerOut = [];      % Power out data store
-dataTime = [];          % Time data store 
+dataMW = [];      % Power out data store
+dataMWh = [];           % MWh data store 
 
 % Generate station outputs
-[time,powerOut] = tidalStationModel(stationNo);
+[t,lastMW,lastMWh] = tidalStationModel(stationNo);
 
 % Store the data
-dataPowerOut=[dataPowerOut;powerOut];
+dataMW = [dataMW;lastMW];
+dataTime = t;        % time will be the same length for all stations.
+dataMWh = [dataMWh;lastMWh];

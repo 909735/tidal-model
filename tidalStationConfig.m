@@ -6,10 +6,16 @@
 % Data
 dataFile = 'StationData.csv';   % Path to file to read data from
 
-% Time and graphing
-t0 = 0;                 % Start time (hours)
-noDays = 14;            % Length of graph in days
-resolution = 30;        % Resolution; Steps per hour
+% Time and graphing. A different value is used to display the graph to that
+% for calculating total energy out. Simulation is run around 30 hours
+% before recording data to make sure the lagoon height calculations
+% function before recording the cumulative power out.
+
+resolution = 12;        % Resolution; Steps per hour
+startTimeCalc = -30;    % Calculation start time, hours
+endDayCalc = 30;        % Calculation for MWh end time in days
+startTimeGraph = 0;     % Graphing start time, hours
+endDayGraph = 14;       % Graphing end time in days
 
 % Assumptions
 disFlow = 0.70;         % Coefficient of water discharge though turbs
