@@ -1,4 +1,4 @@
-function [t,powerOut,MWh] = tidalStationModel(stationNo)
+function [t,WOut,MWh] = tidalStationModel(stationNo)
 %% TidalStationModel - 1D model of a single tidal station
 
 %   Looks up data for a given tidal station number, and 
@@ -62,11 +62,11 @@ function [t,powerOut,MWh] = tidalStationModel(stationNo)
     tidalStationOneWay;
     
 %   Calculate power output over time using lagoon/sea height, gate opens/closes
-    [powerPerKm2,deltaH] = tidalStationGenPower(hLag,hSea,gateOpens,gateCloses);
+    [powerPerKm2,dH] = tidalStationGenPower(hLag,hSea,gateOpens,gateCloses);
     
 %   Adjust for area and turbine efficiency
-    powerIdeal = powerPerKm2*area;
-    powerOut = powerIdeal*turbEff;
+    WIdeal = powerPerKm2*area;
+    WOut = WIdeal*turbEff;
     
 %   Cumulative power produced out
     MWh = 1;

@@ -12,9 +12,9 @@ figNo = stationNo+1;
 
 % Cut data to graph length
 tG = t(t0GInd:t2GInd);
-hSeaG = hSea(t0GInd:t2GInd);
-hLagG = hLag(t0GInd:t2GInd);
-
+hSeaG = hSea(t0GInd:t2GInd);hLagG = hLag(t0GInd:t2GInd);
+dHG = dH(t0GInd:t2GInd);
+WOutG = WOut(t0GInd:t2GInd);WIdealG = WIdeal(t0GInd:t2GInd);
 
 %% Figures
 
@@ -22,7 +22,7 @@ hLagG = hLag(t0GInd:t2GInd);
 figure(figNo), clf(figNo)
 % Subplot 1 - Sea level for site over time
 subplot(4,1,1)
-plot(t,hSea,'r')
+plot(tG,hSeaG,'r')
 title('Sea height over one spring/neap cycle')
 ylabel('height from average (m)')
 xlabel('time (hrs)')
@@ -40,12 +40,12 @@ plot(datum(:,1),datum(:,2),'k-.')
 
 % Subplot 2 - Lagoon level for site with dashed sea level
 subplot(4,1,2)
-plot(t,hSea,'k-.')
+plot(tG,hSeaG,'k-.')
 ylabel('height from average (m)')
 xlabel('time (hrs)')
 grid on
 hold on
-plot(t,hLag,'b')
+plot(tG,hLagG,'b')
 legend('Sea height','Lagoon height')
 
 %{
@@ -63,19 +63,19 @@ figure(2), clf(2)
 
 % Subplot 2 - Lagoon level for site with dashed sea level
 subplot(3,1,1)
-plot(t,hSea,'k-.')
+plot(tG,hSeaG,'k-.')
 ylabel('height from average (m)')
 xlabel('time (hrs)')
 grid on
 hold on
-plot(t,hLag,'b')
+plot(tG,hLagG,'b')
 legend('Sea height','Lagoon height')
 % plot(datum(:,1),datum(:,2),'k-.')
 
 %}
 % Subplot 3 - Height from average
 subplot(4,1,3)
-plot(t,deltaH,'k')
+plot(tG,dHG,'k')
 ylabel('height from average (m)')
 xlabel('time (hrs)')
 grid on
@@ -84,11 +84,11 @@ title('Lagoon/sea height difference')
 
 % Subplot 4 - Power output ideal vs actual
 subplot(4,1,4)
-plot(t,powerIdeal,'r')
+plot(tG,WOutG,'r')
 title('Sea height over one spring/neap cycle')
 ylabel('Power out (MW)')
 xlabel('time (hrs)')
 grid on
 hold on
-%plot(t,powerAct,'b')
+%plot(tG,WIdealG,'b')
 %legend('Ideal power','Actual power')
