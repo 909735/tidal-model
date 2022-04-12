@@ -17,40 +17,40 @@ figure(figNo), clf(figNo)
 
 % Subplot 1 - Sea level for site over time
 subplot(4,1,1)
-plot(tGrph,seaHGrph,'r')
+plot(tGrph,seaHGrph,'r','LineWidth',1.5)
 title('Sea height')
-ylabel('height from average (m)')
-xlabel('time (hrs)')
-grid on
-hold on
+ylabel('h (m)')
+xlabel('t (hrs)')
+grid on, hold on
 
 % Subplot 2 - Lagoon level for site with dashed sea level
 subplot(4,1,2)
-plot(tGrph,seaHGrph,'k-.')
-ylabel('height from average (m)')
-xlabel('time (hrs)')
-grid on
-hold on
-plot(tGrph,lagHGrph,'b')
+plot(tGrph,seaHGrph,'r-')
+title('Water height')
+ylabel('h (m)')
+xlabel('t (hrs)')
+grid on, hold on
+plot(tGrph,lagHGrph,'b','LineWidth',1.5)
+%scatter(t(lowLagInds(4)),lowLags(4),'*m')
+%scatter(t(lowLagInds(5)),lowLags(5),'*m')
 legend('Sea height','Lagoon height')
 
-% Subplot 3 - Height from average
+% Subplot 3 - Height difference
 subplot(4,1,3)
-plot(tGrph,abs(dHGrph),'k')
-ylabel('height from average (m)')
-xlabel('time (hrs)')
-grid on
-hold on
+%plot(datum(:,1),datum(:,2),'k-.','LineWidth',1)
+grid on, hold on
+plot(tGrph,dHGrph,'k','LineWidth',1.5)
+ylabel('dh (m)')
+xlabel('t (hrs)')
 title('Lagoon-sea height difference')
 
-% Subplot 4 - Power output ideal vs actual
+
+% Subplot 4 - Power output actual
 subplot(4,1,4)
-plot(tGrph,POutGrph,'r')
+plot(tGrph,POutGrph,'r','LineWidth',1.5)
 title('Power output')
-ylabel('power out (MW)')
-xlabel('time (hrs)')
-grid on
-hold on
+ylabel('P (MW)')
+xlabel('t (hrs)')
+grid on, hold on
 dispMWh = round(WOutC/1000);
 legend('GWh:'+string(dispMWh)+(' over ')+string(endDayCalc)+' days')
-%legend('Ideal power','Actual power')

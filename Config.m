@@ -13,12 +13,13 @@ dataFile = 'StationData.csv';   % Path to file to read data from
 
 resolution = 15;        % Resolution; Steps per hour
 startTimeCalc = -30;    % Calculation start time, hours
-endDayCalc = 2;         % Calculation for MWh end time in days
+endDayCalc = 4;         % Calculation for MWh end time in days
 startTimeGraph = 0;     % Graphing start time, hours
 endDayGraph = 2;        % Graphing end time in days
 
 % Assumptions
-flowTurbine = 1.0;      % Coefficient of water discharge though turbines
+flowTurbine = 0.8;      % Coefficient of water discharge though turbines
+flowSluice = 5.0;       % Coefficient of water discharge though sluices
 
 % Mode holding time settings - Times in hours
 owHoldingHW = 4.5;      % One-way ebb high water

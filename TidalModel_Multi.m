@@ -52,4 +52,4 @@ for stationNo=[1:numStations]
     figure(1), plot(dataTime,dataMW),
 end
 
-plot(t,dataMWTotal,'-.')
+plot(t,dataMWTotal,'-k','LineWidth',2)

@@ -84,14 +84,11 @@ function [tGrph,POutGrph,WOutC] = tidalStationModel(stationNo)
         genMode_oneWayEbb;
     end
     
-%   Adjust the lagoon height at the given release points
-    script_releaseWater;
-    
 %   Calculate power output over time using lagoon/sea height, gate opens/closes
     [powerOut,dH] = func_genPower(lagH,seaH,area,gateOpens,gateCloses);
     
 %   Cut time and power out to start from 0
-    tC = t(t0GrphInd:numData); POutC = powerOut(t0GrphInd:numData);
+    tCalc = t(t0GrphInd:numData); POutC = powerOut(t0GrphInd:numData);
 
 %   Mega Watt-hours
     WOutC = sum(POutC*dt);

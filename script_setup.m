@@ -8,8 +8,8 @@
 %   > blank lagoon level series
 %   > Gate open/close time blank data
 
-%%  Time 
-    
+
+%%  Time     
 % Start and end times in hours, rounded to nearest dt.
 t0Calc=dt*floor(startTimeCalc/dt);t2Calc=dt*round(24*endDayCalc/dt);
 t0Grph=dt*floor(startTimeGraph/dt);t2Grph=dt*round(24*endDayGraph/dt);
@@ -31,8 +31,8 @@ t0GrphInd=find(t==t0Grph); t2GrphInd = find(t==t2Grph);
 % Number of data entries
 numData = length(t);
 
+
 %%  Calculating tidal cycles
-    
 % Height travelled by water from centreline, median/spring/neap
 hM = range/2;
 hS = hM+rVar/2;
@@ -53,10 +53,29 @@ tideVariation = (1-hN/hM) * (sin(L*t))+1;
 % Scale daily wave by seasonal variation wave
 seaH = tideDailyMedian .* tideVariation;
     
-%% Pre generating mode setup
-% Initially set lagoon height as that of sea
-lagH = seaH;             
 
+%% 	Setting up lagoon height
+% Preallocate lagH, set an initial seaH/lagH value
+lagH = seaH;
+lastSeaH = seaH(1);
+lastLagH = lastSeaH;
+
+% For every data point:
+for x=[1:numData]
+
+%   Set the indices and last values
+    nextLagH = func_flow(lastLagH,lastSeaH,flowSluice);
+       
+%   Set next point height
+    lagH(x) = nextLagH;
+    nextSeaH = seaH(x);
+    
+%   Set the calculated sea/lagoon height as previous
+    lastLagH = nextLagH; lastSeaH = nextSeaH;
+end
+
+
+%%  Pre generation setup
 % Setup arrays containing gate open/close times and indicies
 gateOpens = [];
 gateCloses = [];
@@ -64,9 +83,10 @@ gateCloses = [];
 % Number of data points
 numData = length(lagH);
 
-% Find time indicies of high/low tide
-[HighTides,HighTideInds] = findpeaks(seaH); 
-[LowTides,LowTideInds] = findpeaks(-seaH); LowTides=-LowTides;
+% Find time indicies of lagoon highs
+[highLags,highLagInds] = findpeaks(seaH);
+% Find time indicies of lagoon lows
+[lowLags,lowLagInds] = findpeaks(-seaH); lowLags=-lowLags;
 
     
 %% Function for rounding hold time indices

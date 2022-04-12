@@ -1,24 +1,29 @@
 %%  Generation Mode - One-Way Flow
 %   The model for a one-way flow generation station. Generates the indices
-%   of the gate opening times.
+%   of the gate opening times, then creates a smooth discharge curve.
 
-%   Holds lagoon water at low tide for a hold time, then allows sea water
-%   in through a turbine when it is higher than the lagoon.
+%   Holds water at low tide for a hold time, then releases it as the sea
+%   level is higher.
+
+%% Setup
+
+% Find time indicies of lagoon lows
+[lowLags,lowLagInds] = findpeaks(-lagH); lowLags=-lowLags;
 
 %% Loop to trap water at low tide
 % For every minima (low tide):
-for i=[1:length(LowTides)]
-    lastLTInd = LowTideInds(i);   % Current low tide index
-    lastLTHeight = LowTides(i);   % Current low tide height
+for w=[1:length(lowLags)]
+    lastLLInd = lowLagInds(w);    % Current high tide index
+    lastLLHeight = lowLags(w);    % Current high tide height
     
-%   For each point within the hold time after high water
+%   For each point within the hold time after low water
     for x=[1:holdIndOWLW]
-        curInd = lastLTInd+x;
+        curInd = lastLLInd+x;
         
 %       Check if within bounds
-        if curInd>numData, flag=1; break;     
+        if curInd>numData, flag=1; break     
         end
-        lagH(curInd) = lastLTHeight;
+        lagH(curInd) = lastLLHeight;
     end
     
 %   Break second loop if out of bounds
@@ -27,7 +32,10 @@ for i=[1:length(LowTides)]
     
 %   The last index of holding time is the gate open time
 %   Add gate open time to an array
-    gateOpens(i) = curInd;
-end  
+    gateOpens(w) = curInd;
+    
+%   Release the water using the flow function
+	script_releaseWater;
+end
 
 flag = 0;

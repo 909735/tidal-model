@@ -5,20 +5,25 @@
 %   Holds water at high tide for a hold time, then releases it as the sea
 %   level is lower.
 
+%% Setup
+
+% Find time indicies of lagoon highs
+[highLags,highLagInds] = findpeaks(lagH);
+
 %% Loop to trap water at high tide
 % For every maxima (high tide):
-for i=[1:length(HighTides)]
-    lastHTInd = HighTideInds(i);   % Current high tide index
-    lastHTHeight = HighTides(i);   % Current high tide height
+for w=[1:length(highLags)]
+    lastHLInd = highLagInds(w);   % Current high tide index
+    lastHLHeight = highLags(w);   % Current high tide height
     
 %   For each point within the hold time after high water
     for x=[1:holdIndOWHW]
-        curInd = lastHTInd+x;
+        curInd = lastHLInd+x;
         
 %       Check if within bounds
-        if curInd>numData, flag=1; break;     
+        if curInd>numData, flag=1; break
         end
-        lagH(curInd) = lastHTHeight;
+        lagH(curInd) = lastHLHeight;
     end
     
 %   Break second loop if out of bounds
@@ -27,7 +32,10 @@ for i=[1:length(HighTides)]
     
 %   The last index of holding time is the gate open time
 %   Add gate open time to an array
-    gateOpens(i) = curInd;
-end  
+    gateOpens(w) = curInd;
+    
+%   Release the water using the flow function
+	script_releaseWater;
+end
 
 flag = 0;
