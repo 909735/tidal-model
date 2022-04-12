@@ -25,6 +25,8 @@ dataMWhTotal = 0;       % MWh total data store
 % Start figures
 figure(1); clf(1);
 title('Combined station output')
+ylabel('power out (MW)')
+xlabel('time (hrs)')
 hold on
 
 % loop to generate power output for each station

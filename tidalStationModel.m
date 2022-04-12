@@ -1,4 +1,4 @@
-function [t,WOut,MWh] = tidalStationModel(stationNo)
+function [tGrph,POutGrph,WOutC] = tidalStationModel(stationNo)
 %% TidalStationModel - 1D model of a single tidal station
 
 %   Looks up data for a given tidal station number, and 
@@ -54,22 +54,53 @@ function [t,WOut,MWh] = tidalStationModel(stationNo)
     range = stationData(s,1);   % Median range (m)
     rVar = stationData(s,2);    % Spring/neap range Variation (m)
     phase = stationData(s,3);   % Phase (hours)
+    mode = stationData(s,5);    % Generation mode - 1 or 2 way generation
     
 %   Run common tidal station setup code
     tidalStationSetup;
     
-%   Use one way generation model
-    tidalStationOneWay;
+    str = "Station "+string(stationNo)+" using ";
+    
+%   Generate lagoon gate opening points for operating pattern
+    switch(mode) 
+    case 1
+%       Use one way generation model
+        disp(str+"one-way ebb")
+        tidalStationOneWayEbb;
+        
+    case 2
+%       Use one way generation model
+        disp(str+"one-way flow")
+        tidalStationOneWayFlow;
+        
+    case 3
+%       Use two way generation model
+        disp(str+"two-way")
+        tidalStationTwoWay;
+        
+    otherwise
+%       Display an error and use one way
+        disp(str+"invalid mode")
+        tidalStationOneWay;
+    end
+    
+%   Adjust the lagoon height at the given release points
+    tidalStationReleaseWater;
     
 %   Calculate power output over time using lagoon/sea height, gate opens/closes
-    [powerPerKm2,dH] = tidalStationGenPower(hLag,hSea,gateOpens,gateCloses);
+    [powerOut,dH] = tidalStationGenPower(lagH,seaH,area,gateOpens,gateCloses);
     
-%   Adjust for area and turbine efficiency
-    WIdeal = powerPerKm2*area;
-    WOut = WIdeal*turbEff;
-    
-%   Cumulative power produced out
-    MWh = 1;
+%   Cut time and power out to start from 0
+    tC = t(t0GrphInd:numData); POutC = powerOut(t0GrphInd:numData);
+
+%   Mega Watt-hours
+    WOutC = sum(POutC*dt);
+
+    % Cut data to graph length
+    tGrph = t(t0GrphInd:t2GrphInd);
+    seaHGrph = seaH(t0GrphInd:t2GrphInd); lagHGrph = lagH(t0GrphInd:t2GrphInd);
+    dHGrph = dH(t0GrphInd:t2GrphInd);
+    POutGrph = powerOut(t0GrphInd:t2GrphInd);
     
 %   Draw figures
     tidalStationFiguresSingle;

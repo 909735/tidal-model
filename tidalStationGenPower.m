@@ -1,4 +1,4 @@
-function [MWPerKm2,deltaH] = tidalStationGenPower(lHeight,sHeight,oTimes,cTimes)
+function [MW,dH] = tidalStationGenPower(lHeight,sHeight,area,oTimes,cTimes)
 %%  Generate Power
 %   Function to calculate the power output generated from a given lagoon
 %   and sea height.
@@ -10,7 +10,7 @@ tidalStationConfig;
 turbArea = pi*(0.5*turbDiam)^2;
 
 % Head difference
-deltaH = lHeight - sHeight;
+dH = lHeight - sHeight;
 
 % Shorthands to simplify following code
 lot = length(oTimes); lct = length(cTimes);
@@ -22,7 +22,7 @@ cycles = lct;
 numData = length(lHeight);
 
 % Initialise flow rate per unit area as zeros
-VdotPA = zeros(1,numData);
+Vdot = zeros(1,numData);
 
 % Local volumetric flow rate per unit area. Vdot = dh/dt * A
 % For each gate release
@@ -46,7 +46,7 @@ for i=[1:cycles]
         h2 = lHeight(curInd);
         
 %       Calculate rate of change of height
-        VdotPA(curInd) = (h2-h1)/dt;
+        Vdot(curInd) = area*(h2-h1)/dts;
         
 %       Set h1 for next iteration
         h1 = h2;
@@ -54,6 +54,9 @@ for i=[1:cycles]
 end
 
 % Power output per unit area
-MWPerKm2 = abs(deltaH.*VdotPA*rhoSeawater*g);
+powerIdeal = abs(dH.*Vdot*rhoSeawater*g);
+powerOut = powerIdeal*turbEff;
+MW = powerOut;
+
 end
 

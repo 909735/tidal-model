@@ -7,88 +7,50 @@
 
 %% Setup
 % Create a dashed line to show mean water
-datum = [t0G,0;t2G,0];
+datum = [t0Grph,0;t2Grph,0];
 figNo = stationNo+1;
-
-% Cut data to graph length
-tG = t(t0GInd:t2GInd);
-hSeaG = hSea(t0GInd:t2GInd);hLagG = hLag(t0GInd:t2GInd);
-dHG = dH(t0GInd:t2GInd);
-WOutG = WOut(t0GInd:t2GInd);WIdealG = WIdeal(t0GInd:t2GInd);
 
 %% Figures
 
 % Fig 1
 figure(figNo), clf(figNo)
+
 % Subplot 1 - Sea level for site over time
 subplot(4,1,1)
-plot(tG,hSeaG,'r')
-title('Sea height over one spring/neap cycle')
+plot(tGrph,seaHGrph,'r')
+title('Sea height')
 ylabel('height from average (m)')
 xlabel('time (hrs)')
 grid on
 hold on
-
-%{
-% Additional dev plotting
-plot(tG,hSeaG,'b')
-graphT = [t(t0GInd),t(t2GInd)];
-graphH = [hSea(t0GInd),hSea(t2GInd)];
-scatter(graphT,graphH,'*m')
-plot(datum(:,1),datum(:,2),'k-.')
-%}
 
 % Subplot 2 - Lagoon level for site with dashed sea level
 subplot(4,1,2)
-plot(tG,hSeaG,'k-.')
+plot(tGrph,seaHGrph,'k-.')
 ylabel('height from average (m)')
 xlabel('time (hrs)')
 grid on
 hold on
-plot(tG,hLagG,'b')
+plot(tGrph,lagHGrph,'b')
 legend('Sea height','Lagoon height')
 
-%{
-% Additional dev plotting
-plot(tG,hLagG,'r')
-graphT = [t(t0GInd),t(t2GInd)];
-graphH = [hLag(t0GInd),hLag(t2GInd)];
-scatter(graphT,graphH,'*m')
-plot(datum(:,1),datum(:,2),'k-.')
-%}
-
-%{
-% Fig 2
-figure(2), clf(2)
-
-% Subplot 2 - Lagoon level for site with dashed sea level
-subplot(3,1,1)
-plot(tG,hSeaG,'k-.')
-ylabel('height from average (m)')
-xlabel('time (hrs)')
-grid on
-hold on
-plot(tG,hLagG,'b')
-legend('Sea height','Lagoon height')
-% plot(datum(:,1),datum(:,2),'k-.')
-
-%}
 % Subplot 3 - Height from average
 subplot(4,1,3)
-plot(tG,dHG,'k')
+plot(tGrph,abs(dHGrph),'k')
 ylabel('height from average (m)')
 xlabel('time (hrs)')
 grid on
 hold on
-title('Lagoon/sea height difference')
+title('Lagoon-sea height difference')
 
 % Subplot 4 - Power output ideal vs actual
 subplot(4,1,4)
-plot(tG,WOutG,'r')
-title('Sea height over one spring/neap cycle')
-ylabel('Power out (MW)')
+plot(tGrph,POutGrph,'r')
+title('Power output')
+ylabel('power out (MW)')
 xlabel('time (hrs)')
 grid on
 hold on
-%plot(tG,WIdealG,'b')
+dispMWh = round(WOutC/1000);
+legend('GWh:'+string(dispMWh)+(' over ')+string(endDayCalc)+' days')
 %legend('Ideal power','Actual power')

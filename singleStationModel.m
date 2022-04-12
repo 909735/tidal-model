@@ -14,7 +14,7 @@ stationNo = 1;
 
 % Initialise data storage
 dataMW = [];      % Power out data store
-dataMWh = [];           % MWh data store 
+dataMWh = [];     % MWh data store 
 
 % Generate station outputs
 [t,lastMW,lastMWh] = tidalStationModel(stationNo);
