@@ -47,11 +47,19 @@ L = 4*pi/t1;                % Freq match to seasonal tides
 tideDailyMedian = hM * sin(T*t+Phi);
 tideDailySping = hS * sin(T*t+Phi);
 tideDailyNeap = hN * sin(T*t+Phi);
+
+% Cut the first wave to ensure a peak first (stuff breaks if a trough is
+% first for some reason)
+tideDaily = tideDailyMedian;
+[~,highSeaInds] = findpeaks(tideDaily);
+for p=[1:highSeaInds(1)]
+        tideDaily(p)=0;
+end
     
 % Create a seasonal variation wave
 tideVariation = (1-hN/hM) * (sin(L*t))+1;
 % Scale daily wave by seasonal variation wave
-seaH = tideDailyMedian .* tideVariation;
+seaH = tideDaily .* tideVariation;
     
 
 %% 	Setting up lagoon height
@@ -84,9 +92,10 @@ gateCloses = [];
 numData = length(lagH);
 
 % Find time indicies of lagoon highs
-[highLags,highLagInds] = findpeaks(seaH);
+[highLags,highLagInds] = findpeaks(seaH,'MinPeakProminence',0.5);
 % Find time indicies of lagoon lows
-[lowLags,lowLagInds] = findpeaks(-seaH); lowLags=-lowLags;
+[lowLags,lowLagInds] = findpeaks(-seaH,'MinPeakProminence',0.5); 
+lowLags=-lowLags;
 
     
 %% Function for rounding hold time indices

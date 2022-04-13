@@ -11,9 +11,9 @@ dataFile = 'StationData.csv';   % Path to file to read data from
 % before recording data to make sure the lagoon height calculations
 % function before recording the cumulative power out.
 
-resolution = 15;        % Resolution; Steps per hour
-startTimeCalc = -30;    % Calculation start time, hours
-endDayCalc = 4;         % Calculation for MWh end time in days
+resolution = 20;        % Resolution; Steps per hour
+startTimeCalc = 0;    % Calculation start time, hours
+endDayCalc = 2;        % Calculation for MWh end time in days
 startTimeGraph = 0;     % Graphing start time, hours
 endDayGraph = 2;        % Graphing end time in days
 
@@ -28,11 +28,11 @@ twHoldingHW = 2.0;      % Two-way high water
 twHoldingLW = 2.0;      % Two-way low water
 
 % Gate close threshold
-closeThresh = 0.02;      % Percent difference where gate is closed
+closeThresh = 0.02;     % Percent difference where gate is closed
 
 % Turbine settings
 turbDiam = 7;           % Diameter
-turbEff = 0.60;         % Efficiency
+turbEff = 0.70;         % Efficiency
 turbPerArea = 1.4;      % Number of turbines per unit area (km^2)
 
 %% Constants

@@ -20,23 +20,26 @@ for x=[1:dayInd]
 %   if out of bounds 
     if curInd>numData
 %       Set as a gate closing index and break
-        gateCloses(w) = curInd; break
+        lastGateCloseHeight = lastLagH;
+        gateCloseInds(w) = curInd; break
     end
     
-%   Find how close the new lagoon h is to the original lagoon h curve
-    oldNextLagH = lagH(curInd);
-    closeness = (nextLagH/oldNextLagH);
+%   Find how close the new lagoon h is to the (SEA or OLD LAG?) h curve
+    %oldNextLagH = lagH(curInd);
+    nextSeaH = seaH(curInd);
+    closeness = (nextLagH/nextSeaH);
       
 %   If lagoon h is close to sea h
     if (closeness>LowBdry && closeness<UppBdry)
 %       Set as a gate closing index and break
-        gateCloses(w) = curInd; break
-        
-    else
-%       Otherwise, set next point height
+        gateCloseInds(w) = curInd; 
+        lastGateCloseInd = curInd;
+        lastGateCloseHeight = nextLagH;
         lagH(curInd) = nextLagH;
-        nextSeaH = seaH(curInd);
+        break
     end
+    
+    lagH(curInd) = nextLagH;
     
 %   Set the calculated sea/lagoon height as previous
     lastLagH = nextLagH; lastSeaH = nextSeaH;

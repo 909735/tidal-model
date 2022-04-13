@@ -6,21 +6,18 @@
 %   the sea level is lower or higher respectively.
 
 
-%% Setup - 1st pass, Ebb gen
+%% Setup
 
 % Find time indicies of lagoon highs and lows
-[highLags,highLagInds] = findpeaks(lagH);
-[lowLags,lowLagInds] = findpeaks(-lagH); lowLags=-lowLags;
+[highLags,highLagInds] = findpeaks(lagH,'MinPeakProminence',0.5);
+[lowLags,lowLagInds] = findpeaks(-lagH,'MinPeakProminence',0.5); 
+lowLags=-lowLags;
 
-% Peak or trough first?
-HLI1 = highLagInds(1); LLI1 = lowLagInds(1);
-First = min(HLI1,LLI1);
-if HLI1<LLI1
-    disp("Peak first")
-else
-    disp("Trough first")
-end
-disp("H1:"+HLI1+" L1:"+LLI1+" Waves:"+First)
+%lastGateCloseHeight = highLags(1);
+%lastGateCloseInd = highLagInds(1);
+
+lastGateCloseHeight = 0;
+lastGateCloseInd = 1;
 
 % Find whichever is lower
 nHigh = length(highLags);
@@ -28,29 +25,52 @@ nLow = length(lowLags);
 waveCount = min(nHigh,nLow);
 disp("H:"+nHigh+" L:"+nLow+" Waves:"+waveCount)
 
+%{
+pause(0.6)
+figure(1), clf(1),
+grid on
+title('Water height')
+ylabel('h (m)')
+xlabel('t (hrs)')
+plot(t,seaH,'r-')
+hold on
+plot(t,lagH,'b','LineWidth',1.5)
+hold off
+%}
 
 %% Loop to trap water at high/low tide
 % For every cycle (taken as high tide) and a couple more just in case:
-for w=[1:length(highLags)]
+for w=[1:nHigh]
 %% First half - Ebb, holding and gate open time
 
+    %{
 %   Find time indicies of lagoon highs
-    [highLags,highLagInds] = findpeaks(lagH);
+    [highLags,highLagInds] = findpeaks(lagH,'MinPeakProminence',0.5);
     
-%   Get the previous lagoon high water heights and indices. These change
-%   each cycle, but should remain the same index number.
-    lastHLInd = highLagInds(w);   % Current high tide index
-    lastHLHeight = highLags(w);   % Current high tide height
+    pause(0.3)    
+    plot(t,seaH,'r-')
+    hold on
+    plot(t,lagH,'b','LineWidth',1.5)
+    scatter(t(highLagInds),highLags,'m*')
+    scatter(t(lowLagInds),lowLags,'m*')
+    hold off
+    %disp("Done ebb "+w)
     
+%   Check for edgecase where number of peaks reduces at end of calc
+    nHigh = length(highLags);
+    if w>nLow, flag=1; break;
+    end
+    %}
+
 %   For each point within the hold time after high water
-    for x=[1:holdIndTWHW]
-        curInd = lastHLInd+x;
+    for x=[0:holdIndTWHW]
+        curInd = lastGateCloseInd+x;
         
 %       Check if within bounds
         if curInd>numData, flag=1; break;     
         end
 %       Set height to last high water
-        lagH(curInd) = lastHLHeight;
+        lagH(curInd) = lastGateCloseHeight;
     end
     
 %   Break second loop if out of bounds
@@ -65,26 +85,37 @@ for w=[1:length(highLags)]
     script_releaseWater;
     
     
-    
 %% Second half - Flow, holding and gate open time
 
+    %{
 %   Find time indicies of lagoon lows 
-    [lowLags,lowLagInds] = findpeaks(-lagH); lowLags=-lowLags;
+    [lowLags,lowLagInds] = findpeaks(-lagH,'MinPeakProminence',0.5); 
+    lowLags=-lowLags;  
     
-%   Get the previous lagoon low water heights and indices. These change
-%   each cycle, but should remain the same index number.
-    lastLLInd = lowLagInds(w);   % Current low tide index
-    lastLLHeight = lowLags(w);   % Current low tide height
-        
+    pause(0.3)    
+    plot(t,seaH,'r-')
+    hold on
+    plot(t,lagH,'b','LineWidth',1.5)
+    scatter(t(highLagInds),highLags,'m*')
+    scatter(t(lowLagInds),lowLags,'m*')
+    hold off
+    %disp("Done flow "+w)
+    
+%   Check for edgecase where number of troughs reduces at end of calc
+    nLow = length(lowLags);
+    if w>nLow, flag=1; break
+    end
+    %}
+    
 %   For each point within the hold time after low water
-    for x=[1:holdIndTWLW]
-        curInd = lastLLInd+x;
+    for x=[0:holdIndTWLW]
+        curInd = lastGateCloseInd+x;
         
 %       Check if within bounds
         if curInd>numData, flag=1; break;     
         end
 %       Set height to last low water
-        lagH(curInd) = lastLLHeight;
+        lagH(curInd) = lastGateCloseHeight;
     end    
     
 %   Break second loop if out of bounds
@@ -97,7 +128,6 @@ for w=[1:length(highLags)]
 
 %   Release the water using the flow function
 	script_releaseWater;
-    
     
     
 end
