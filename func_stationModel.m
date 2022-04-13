@@ -67,16 +67,22 @@ function [tGrph,POutGrph,WOutC] = func_stationModel(stationNo)
 %       Use one way generation model
         disp(str+"one-way ebb")
         genMode_oneWayEbb;
+%       Calculate power output
+        [powerOut,dH] = func_genPower(lagH,seaH,area,opInds,clInds);
         
     case 2
 %       Use one way generation model
         disp(str+"one-way flow")
         genMode_oneWayFlow;
+%       Calculate power output
+        [powerOut,dH] = func_genPower(lagH,seaH,area,opInds,clInds);
         
     case 3
 %       Use two way generation model
         disp(str+"two-way")
         genMode_twoWay;
+%       Calculate power output
+        [powerOut,dH] = func_genPower(lagH,seaH,area,opInds,clInds);
         
     otherwise
 %       Display an error and use one way
@@ -84,8 +90,7 @@ function [tGrph,POutGrph,WOutC] = func_stationModel(stationNo)
         genMode_oneWayEbb;
     end
     
-%   Calculate power output over time using lagoon/sea height, gate opens/closes
-    [powerOut,dH] = func_genPower(lagH,seaH,area,gateOpenInds,gateCloseInds);
+
     
 %   Cut time and power out to start from 0
     tCalc = t(t0GrphInd:numData); POutC = powerOut(t0GrphInd:numData);

@@ -12,37 +12,23 @@
 [highLags,~] = findpeaks(lagH,'MinPeakProminence',0.5);
 nHigh = length(highLags);
 
-lastGateCloseHeight = 0;
-lastGateCloseInd = 1;
-
-%{
-pause(0.6)
-figure(1), clf(1),
-grid on
-title('Water height')
-ylabel('h (m)')
-xlabel('t (hrs)')
-plot(t,seaH,'r-')
-hold on
-plot(t,lagH,'b','LineWidth',1.5)
-hold off
-%}
+lastCloseHgt = 0;
+lastCloseInd = 1;
 
 %% Loop to trap water at high/low tide
 % For every cycle (taken as high tide) and a couple more just in case:
 for w=[1:nHigh]
 %% First half - Ebb, holding and gate open time
 
-
 %   For each point within the hold time after high water
     for x=[0:holdIndTWHW]
-        curInd = lastGateCloseInd+x;
+        curInd = lastCloseInd+x;
         
 %       Check if within bounds
         if curInd>numData, flag=1; break;     
         end
 %       Set height to last high water
-        lagH(curInd) = lastGateCloseHeight;
+        lagH(curInd) = lastCloseHgt;
     end
     
 %   Break second loop if out of bounds
@@ -51,24 +37,26 @@ for w=[1:nHigh]
     
 %   The last index of holding time is the gate open time
 %   Add gate open time to an array
-    gateOpenInds(w) = curInd;
+    opInds(w) = curInd;
+    opIndsEbb(w) = curInd;
 
 %   Release the water using the flow function
     script_releaseWater;
+    clInds(w) = curInd;
+    clIndsEbb(w) = lastCloseInd;
     
     
 %% Second half - Flow, holding and gate open time
-
     
 %   For each point within the hold time after low water
     for x=[0:holdIndTWLW]
-        curInd = lastGateCloseInd+x;
+        curInd = lastCloseInd+x;
         
 %       Check if within bounds
         if curInd>numData, flag=1; break;     
         end
 %       Set height to last low water
-        lagH(curInd) = lastGateCloseHeight;
+        lagH(curInd) = lastCloseHgt;
     end    
     
 %   Break second loop if out of bounds
@@ -77,11 +65,13 @@ for w=[1:nHigh]
     
 %   The last index of holding time is the gate open time
 %   Add gate open time to an array
-    gateOpenInds(w) = curInd;
+    opInds(w) = curInd;
+    opIndsFlow(w) = curInd;
 
 %   Release the water using the flow function
 	script_releaseWater;
-    
+    clInds(w) = curInd;
+    clIndsFlow(w) = lastCloseInd;
     
 end
 

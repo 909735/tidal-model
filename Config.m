@@ -13,7 +13,7 @@ dataFile = 'StationData.csv';   % Path to file to read data from
 
 resolution = 15;        % Resolution; Steps per hour
 startTimeCalc = -30;    % Calculation start time, hours
-endDayCalc = 365;       % Calculation for MWh end time in days
+endDayCalc = 20;       % Calculation for MWh end time in days
 startTimeGraph = 0;     % Graphing start time, hours
 endDayGraph = 2;        % Graphing end time in days
 
@@ -43,6 +43,5 @@ g = 9.81;               % Gravitational acceleration
 
 %% Global calculated values
 dt = 1/resolution;          % Data time step
-dts = dt*3600;              % Time step in seconds
 LowBdry = 1-closeThresh;    % Lower boundary for sea/lag h threshold
 UppBdry  = 1+closeThresh;   % Upper boundary for sea/lag h threshold
