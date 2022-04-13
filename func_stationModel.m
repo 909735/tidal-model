@@ -1,4 +1,4 @@
-function [tGrph,POutGrph,WOutC] = tidalStationModel(stationNo)
+function [tGrph,POutGrph,WOutC] = func_stationModel(stationNo)
 %% TidalStationModel - 1D model of a single tidal station
 
 %   Looks up data for a given tidal station number, and 
@@ -85,7 +85,7 @@ function [tGrph,POutGrph,WOutC] = tidalStationModel(stationNo)
     end
     
 %   Calculate power output over time using lagoon/sea height, gate opens/closes
-    [powerOut,dH] = func_genPower(lagH,seaH,area,gateOpens,gateCloses);
+    [powerOut,dH] = func_genPower(lagH,seaH,area,gateOpenInds,gateCloseInds);
     
 %   Cut time and power out to start from 0
     tCalc = t(t0GrphInd:numData); POutC = powerOut(t0GrphInd:numData);

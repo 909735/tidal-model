@@ -7,9 +7,6 @@ function [MW,dH] = func_genPower(lHeight,sHeight,area,oTimes,cTimes)
 % Read the config
 Config;
 
-% Turbine qualities
-turbArea = pi*(0.5*turbDiam)^2;
-
 % Head difference
 dH = lHeight - sHeight;
 

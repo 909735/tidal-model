@@ -32,7 +32,7 @@ for w=[1:length(highLags)]
     
 %   The last index of holding time is the gate open time
 %   Add gate open time to an array
-    gateOpens(w) = curInd;
+    gateOpenInds(w) = curInd;
     
 %   Release the water using the flow function
 	script_releaseWater;

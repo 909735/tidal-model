@@ -85,8 +85,8 @@ end
 
 %%  Pre generation setup
 % Setup arrays containing gate open/close times and indicies
-gateOpens = [];
-gateCloses = [];
+gateOpenInds = [];
+gateCloseInds = [];
 
 % Number of data points
 numData = length(lagH);

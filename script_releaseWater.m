@@ -3,7 +3,7 @@
 %   in or out.
 
 %% Setup
-lastOpenInd = gateOpens(w);         % Current gate open index
+lastOpenInd = gateOpenInds(w);      % Current gate open index
 lastLagH = lagH(lastOpenInd);       % Current gate open lagoon height
 lastSeaH = seaH(lastOpenInd);       % Current gate open sea height
 
