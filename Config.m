@@ -6,40 +6,44 @@
 % Data
 dataFile = 'StationData.csv';   % Path to file to read data from
 
-% Time and graphing. A different value is used to display the graph to that
-% for calculating total energy out. Simulation is run around 30 hours
-% before recording data to make sure the lagoon height calculations
-% function before recording the cumulative power out.
-
-resolution = 15;        % Resolution; Steps per hour
-startTimeCalc = -30;    % Calculation start time, hours
-endDayCalc = 20;       % Calculation for MWh end time in days
-startTimeGraph = 0;     % Graphing start time, hours
-endDayGraph = 2;        % Graphing end time in days
+% Time settings
+startTimeCalc = -30;        % Calculation start time, hours. Ideally < -30
+endDayCalc = 60;            % Calculation for MWh end time in days
 
 % Assumptions
-flowTurbine = 0.8;      % Coefficient of water discharge though turbines
-flowSluice = 5.0;       % Coefficient of water discharge though sluices
+flowTurbine = 0.7;          % Coefficient of water discharge though turbs
+flowSluice = 5.0;           % Coefficient of water discharge though sluices
 
 % Mode holding time settings - Times in hours
-owHoldingHW = 4.5;      % One-way ebb high water
-owHoldingLW = 4.5;      % One-way flow high water
-twHoldingHW = 2.0;      % Two-way high water
-twHoldingLW = 2.0;      % Two-way low water
+owHoldingHW = 6.0;          % One-way ebb high water
+owHoldingLW = 4.0;          % One-way flow high water
+twHoldingHW = 4.0;          % Two-way high water
+twHoldingLW = 4.0;          % Two-way low water
+
+% Graph settings
+startTimeGraph = 0;         % Graphing start time, hours. Normally 0
+endDayGraph = 2;            % Graphing end time in days
+resolution = 15;            % Resolution; Steps per hour
+txtSpaceX = 2;              % Text spacing - X
+txtSpaceY = 30;             % Text spacing - Y
+txtSize = 06;               % Text font size
+figPath = "Figs/";          % Folder to put graphs in
+figPrefix = "OWE ";         % Prefix (if any) to name graphs by
+figHolding = owHoldingHW;   % Which holding time to name graph by
 
 % Gate close threshold
-closeThresh = 0.02;     % Percent difference where gate is closed
+closeThresh = 0.1;         % Percent difference where gate is closed
 
 % Turbine settings
-turbEff = 0.70;         % Efficiency
+turbEff = 0.70;             % Efficiency
 
 %% Constants
 
 % Constant properties
-tidalDay = 24.83;       % Period between moonrises in hours
-lunarOrbit = 29.53;     % Period between new moons in hours
-rhoSeawater = 1027;     % Density of sea water
-g = 9.81;               % Gravitational acceleration
+tidalDay = 24.83;           % Period between moonrises in hours
+lunarOrbit = 29.53;         % Period between new moons in hours
+rhoSeawater = 1027;         % Density of sea water
+g = 9.81;                   % Gravitational acceleration
 
 %% Global calculated values
 dt = 1/resolution;          % Data time step

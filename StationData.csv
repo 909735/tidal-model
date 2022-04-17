@@ -1,7 +1,7 @@
 Location,Median Tidal Range (m),Sping/Neap Variation (m),Phase difference (hrs),Area (km^2),Mode
-Swansea,8,2,0,11.5,3
-Example 2,8,2,4,11.5,1
-Example 3,8,2,8,11.5,3
-Example 6,8,2,20,11.5,1
-Example 5,8,2,16,11.5,2
-Example 4,8,2,12,11.5,3
+Swansea,6.5,1.5,0,11.5,1
+Dover,4.5,1.5,4,11.5,2
+Cromer,3,1,8,11.5,1
+Plymouth,3.5,1.5,20,11.5,3
+Port Erin,4,1,16,11.5,3
+Heysham,6.5,2,12,11.5,1

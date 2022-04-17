@@ -37,13 +37,11 @@ for w=[1:nHigh]
     
 %   The last index of holding time is the gate open time
 %   Add gate open time to an array
-    opInds(w) = curInd;
-    opIndsEbb(w) = curInd;
+    opIndsE(w) = curInd;
 
 %   Release the water using the flow function
     script_releaseWater;
-    clInds(w) = curInd;
-    clIndsEbb(w) = lastCloseInd;
+    clIndsE(w) = curInd;
     
     
 %% Second half - Flow, holding and gate open time
@@ -65,13 +63,11 @@ for w=[1:nHigh]
     
 %   The last index of holding time is the gate open time
 %   Add gate open time to an array
-    opInds(w) = curInd;
-    opIndsFlow(w) = curInd;
+    opIndsF(w) = curInd;
 
 %   Release the water using the flow function
 	script_releaseWater;
-    clInds(w) = curInd;
-    clIndsFlow(w) = lastCloseInd;
+    clIndsF(w) = curInd;
     
 end
 

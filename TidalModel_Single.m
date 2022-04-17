@@ -9,6 +9,8 @@
 
 %% Setup
 
+clc
+
 % Data entry
 stationNo = 1;
 

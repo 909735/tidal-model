@@ -25,6 +25,7 @@ Vdot = zeros(1,numData);
 
 % Local volumetric flow rate per unit area. Vdot = dh/dt * A
 % For each gate release
+
 for c=[1:cycles]
     openInd = openTimes(c);
     closeInd = closeTimes(c);

@@ -1,4 +1,4 @@
-function [tGrph,POutGrph,WOutC] = func_stationModel(stationNo)
+function [tGrph,powerGrph,WOutC] = func_stationModel(stationNo)
 %% TidalStationModel - 1D model of a single tidal station
 
 %   Looks up data for a given tidal station number, and 
@@ -47,14 +47,14 @@ function [tGrph,POutGrph,WOutC] = func_stationModel(stationNo)
     stationData = stations.data;
     
 %   Get the data entry
-    s = stationNo;
+    sNo = stationNo;
     
 %   Set the parameters to that of the data entry
-    area = stationData(s,4);    % Area (km^2)
-    range = stationData(s,1);   % Median range (m)
-    rVar = stationData(s,2);    % Spring/neap range Variation (m)
-    phase = stationData(s,3);   % Phase (hours)
-    mode = stationData(s,5);    % Generation mode - 1 or 2 way generation
+    area = stationData(sNo,4);    % Area (km^2)
+    range = stationData(sNo,1);   % Median range (m)
+    rVar = stationData(sNo,2);    % Spring/neap range Variation (m)
+    phase = stationData(sNo,3);   % Phase (hours)
+    mode = stationData(sNo,5);    % Generation mode - 1 or 2 way generation
     
 %   Run common tidal station setup code
     script_setup;
@@ -67,33 +67,30 @@ function [tGrph,POutGrph,WOutC] = func_stationModel(stationNo)
 %       Use one way generation model
         disp(str+"one-way ebb")
         genMode_oneWayEbb;
-%       Calculate power output
-        [powerOut,dH] = func_genPower(lagH,seaH,area,opInds,clInds);
         
     case 2
 %       Use one way generation model
         disp(str+"one-way flow")
         genMode_oneWayFlow;
-%       Calculate power output
-        [powerOut,dH] = func_genPower(lagH,seaH,area,opInds,clInds);
         
     case 3
 %       Use two way generation model
         disp(str+"two-way")
         genMode_twoWay;
-%       Calculate power output
-        [powerOut,dH] = func_genPower(lagH,seaH,area,opInds,clInds);
         
     otherwise
 %       Display an error and use one way
         disp(str+"invalid mode")
-        genMode_oneWayEbb;
+        return
     end
     
-
+%   Calculate power output
+    [powerOutA,dH] = func_genPower(lagH,seaH,area,opIndsE,clIndsE);
+    [powerOutB,~] = func_genPower(lagH,seaH,area,opIndsF,clIndsF);
+    power = powerOutA+powerOutB;
     
 %   Cut time and power out to start from 0
-    tCalc = t(t0GrphInd:numData); POutC = powerOut(t0GrphInd:numData);
+    tCalc = t(t0GrphInd:numData); POutC = power(t0GrphInd:numData);
 
 %   Mega Watt-hours
     WOutC = sum(POutC*dt);
@@ -103,7 +100,7 @@ function [tGrph,POutGrph,WOutC] = func_stationModel(stationNo)
     seaHGrph = seaH(t0GrphInd:t2GrphInd); 
     lagHGrph = lagH(t0GrphInd:t2GrphInd);
     dHGrph = dH(t0GrphInd:t2GrphInd);
-    POutGrph = powerOut(t0GrphInd:t2GrphInd);
+    powerGrph = power(t0GrphInd:t2GrphInd);
     
 %   Draw figures
     script_drawFiguresSingle;

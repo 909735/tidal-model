@@ -85,11 +85,8 @@ end
 
 %%  Pre generation setup
 % Setup arrays containing gate open/close times and indicies
-opInds = []; opIndsEbb = []; opIndsFlw = [];
-clInds = []; clIndsEbb = []; clIndsFlw = [];
-
-% Number of data points
-numData = length(lagH);
+opInds = []; opIndsE = []; opIndsF = [];
+clInds = []; clIndsE = []; clIndsF = [];
 
 % Find time indicies of lagoon highs
 [highLags,highLagInds] = findpeaks(seaH,'MinPeakProminence',0.5);
