@@ -12,7 +12,7 @@ UppBdry  = 1+closeThresh;   % Upper boundary for sea/lag h threshold
     
 %% For each point within a day cycle of the current point:
 for x=[1:dayInd]
-    
+    x
 %   Set the indices and last values
     curInd = lastOpenInd+x;
     nextLagH = func_flow(lastLagH,lastSeaH,flowTurbine);
@@ -27,7 +27,8 @@ for x=[1:dayInd]
 %   Find how close the new lagoon h is to the (SEA or OLD LAG?) h curve
     %oldNextLagH = lagH(curInd);
     nextSeaH = seaH(curInd);
-    closeness = (nextLagH/nextSeaH);
+    oldLagH = lagH(curInd);
+    closeness = (nextLagH/oldLagH);
       
 %   If lagoon h is close to sea h
     if (closeness>LowBdry && closeness<UppBdry)
@@ -44,3 +45,4 @@ for x=[1:dayInd]
     lastLagH = nextLagH; lastSeaH = nextSeaH;
 end
 
+disp("Error releasing water")

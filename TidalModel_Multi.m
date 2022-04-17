@@ -10,11 +10,16 @@
 %   energy - without the hot air (MacKay D, 2008.).
 
 % Setup
+Config;
 
 % Import station data, keep numbers, find no of stations
-stations = importdata('StationData.csv');
-stationData = stations.data;
-numStations = size(stationData,1);
+file=simpleDataFile;
+if dataMode=="actual"
+    file=actualDataFile;
+end
+
+stations = importdata(file);
+numStations = size(stations.data,1);
 
 % Initialise data storage
 dataMW = [];            % Power out data store

@@ -4,18 +4,30 @@
 %% Settings
 
 % Data
-dataFile = 'StationData.csv';   % Path to file to read data from
+% Data mode - chooses which sea height setup to use.
+% 1 for Simple, 2 for Actual.
+dataMode = "Simple";
+
+% File paths
+simpleDataFile = 'StationData.csv';         % Simple data model
+actualDataFile = 'Cut-2020-DataList.csv';   % Actual data model
 
 % Time and graphing. A different value is used to display the graph to that
 % for calculating total energy out. Simulation is run around 30 hours
 % before recording data to make sure the lagoon height calculations
 % function before recording the cumulative power out.
 
-resolution = 15;        % Resolution; Steps per hour
+% Simple data model
+resolution = 4;         % Resolution; Steps per hour
 startTimeCalc = -30;    % Calculation start time, hours
-endDayCalc = 20;       % Calculation for MWh end time in days
+endDayCalc = 30;        % Calculation for MWh end time in days
 startTimeGraph = 0;     % Graphing start time, hours
 endDayGraph = 2;        % Graphing end time in days
+
+% Actual data model
+actDataTStep = 0.25;    % Time step of tide data in hrs
+actDataStartTime = 0;   % Time to begin at
+actDataEndDay = 365;    % Day to end after
 
 % Assumptions
 flowTurbine = 0.8;      % Coefficient of water discharge though turbines
@@ -45,3 +57,4 @@ g = 9.81;               % Gravitational acceleration
 dt = 1/resolution;          % Data time step
 LowBdry = 1-closeThresh;    % Lower boundary for sea/lag h threshold
 UppBdry  = 1+closeThresh;   % Upper boundary for sea/lag h threshold
+dataMode = lower(dataMode);

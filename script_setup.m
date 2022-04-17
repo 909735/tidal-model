@@ -1,23 +1,15 @@
-%%  script_setup
-%   Sets up common variables for all tidal station models
+%%  script_setupSimple
+%   Sets up time and sea height series for simple data model
 
 %   Sets up:
 %   > time series
 %   > time end points
 %   > sea level series for current station
-%   > blank lagoon level series
-%   > Gate open/close time blank data
-
 
 %%  Time     
 % Start and end times in hours, rounded to nearest dt.
 t0Calc=dt*floor(startTimeCalc/dt);t2Calc=dt*round(24*endDayCalc/dt);
 t0Grph=dt*floor(startTimeGraph/dt);t2Grph=dt*round(24*endDayGraph/dt);
-
-% Gate hold time and half daily cycle indices, rounded to nearest dt.
-holdIndOWHW = iRound(owHoldingHW,dt);holdIndOWLW = iRound(owHoldingLW,dt);
-holdIndTWHW = iRound(twHoldingHW,dt);holdIndTWLW = iRound(twHoldingLW,dt);
-dayInd = round(0.5*tidalDay/dt);
 
 % Time of one spring/neap cycle
 t1 = lunarOrbit*24;
@@ -27,10 +19,6 @@ t = [t0Calc:dt:t2Calc];
 
 % Graph start/end time indices
 t0GrphInd=find(t==t0Grph); t2GrphInd = find(t==t2Grph);
-
-% Number of data entries
-numData = length(t);
-
 
 %%  Calculating tidal cycles
 % Height travelled by water from centreline, median/spring/neap
@@ -63,6 +51,10 @@ seaH = tideDaily .* tideVariation;
     
 
 %% 	Setting up lagoon height
+
+% Number of data entries
+numData = length(t);
+
 % Preallocate lagH, set an initial seaH/lagH value
 lagH = seaH;
 lastSeaH = seaH(1);
@@ -88,14 +80,16 @@ end
 opInds = []; opIndsEbb = []; opIndsFlw = [];
 clInds = []; clIndsEbb = []; clIndsFlw = [];
 
-% Number of data points
-numData = length(lagH);
-
 % Find time indicies of lagoon highs
 [highLags,highLagInds] = findpeaks(seaH,'MinPeakProminence',0.5);
 % Find time indicies of lagoon lows
 [lowLags,lowLagInds] = findpeaks(-seaH,'MinPeakProminence',0.5); 
 lowLags=-lowLags;
+
+% Gate hold time and half daily cycle indices, rounded to nearest dt.
+holdIndOWHW = iRound(owHoldingHW,dt);holdIndOWLW = iRound(owHoldingLW,dt);
+holdIndTWHW = iRound(twHoldingHW,dt);holdIndTWLW = iRound(twHoldingLW,dt);
+dayInd = round(0.5*tidalDay/dt);
 
     
 %% Function for rounding hold time indices
