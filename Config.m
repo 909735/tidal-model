@@ -5,14 +5,14 @@
 
 % Data
 dataFolder = "Data/";
-dataFileName = "StationData";   % Path to file to read data from
+dataFileName = "StationData3";  % Path to file to read data from
 realDataFileName = "Data2020";  % Path for real world data file
 fileExt = ".csv";               % File format being used
 realFileExt = ".csv";           % File format being used
 
 % Time settings
 startTimeCalc = -30;        % Calculation start time, hours. Ideally < -30
-endDayCalc = 120;           % Calculation for MWh end time in days
+endDayCalc = 4;             % Calculation for MWh end time in days
 seaonalStartPhase = 0;      % Start phase in days for seasonal variation
 
 % Assumptions
@@ -29,7 +29,7 @@ twHoldingLW = 4.0;          % Two-way low water
 
 % Graph settings
 startTimeGraph = 0;         % Graphing start time, hours. Normally 0
-endDayGraph = 30;           % Graphing end time in days
+endDayGraph = 02;           % Graphing end time in days
 resolution = 4;             % Resolution; Steps per hour
 txtSpaceX = 2;              % Text spacing - X
 txtSpaceY = 30;             % Text spacing - Y

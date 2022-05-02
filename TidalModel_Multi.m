@@ -20,42 +20,35 @@ numStations = size(stationData,1);
 
 % Initialise data storage
 dataMW = [];            % Power out data store
+dataMWAll = [];         % Power out data store for all stations
 dataMWTotal = [];       % Power total data store
 dataMWh = [];           % MWh data store
+dataMWhAll = [];        % MWh data store for all stations
 dataMWhTotal = 0;       % MWh total data store
 
-% Start figures
-figMulti = figure(1); clf(1);
-title('Combined station output')
-ylabel('power out (MW)')
-xlabel('time (hrs)')
-hold on
-
 % loop to generate power output for each station
-for stationNo=[1:numStations]
+for s=[1:numStations]
     
 %   Generate station outputs
-    [t,lastMW,lastMWh] = func_stationModel(stationNo);
+    [t,lastMW,lastMWh] = func_stationModel(s);
     
 %   Store the data
     dataTime = t;
     dataMW = [dataMW;lastMW];
+    dataMWAll(s,:) = lastMW;
     dataMWh = [dataMWh;lastMWh];
+    dataMWhAll(s,:) = lastMWh;
+    
 %   Add cumulative data
-    if stationNo==1
+    if s==1
         dataMWTotal = lastMW;
         dataMWhTotal = lastMWh;
     else
         dataMWTotal = dataMWTotal+lastMW;
         dataMWhTotal = dataMWhTotal+lastMWh;
     end
-    
-%   Plot
-    figure(1), plot(dataTime,dataMW),
 end
 
-plot(t,dataMWTotal,'-k','LineWidth',2)
+% Plot stuff
+script_drawFiguresMulti;
 
-% Save fig
-fullPath = figPath+figPrefix+"_Len"+endDayGraph+"sum.png";
-exportgraphics(figMulti,fullPath,'Resolution',300)
