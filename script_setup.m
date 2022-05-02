@@ -35,18 +35,30 @@ numData = length(t);
 %%  Calculating tidal cycles
 % Height travelled by water from centreline, median/spring/neap
 hM = range/2;
-hS = hM+rVar/2;
-hN = hM-rVar/2;
+hSAv = hM+rVar/4;
+hNAv = hM-rVar/4;
+hSMx = hSAv+sVar/2;
+hSMn = hSAv-sVar/2;
+hNMx = hNAv+sVar/2;
+hNMn = hNAv-sVar/2;
+
+disp("hMean:"+hM+" hSprAvg:"+hSAv+" hSprMax:"+hSMx+" hSprMin:"+hSMn+...
+    " hNepAvg:"+hNAv+" hNepMax:"+hNMx+" hNepMin:"+hNMn)
     
 % Coeffs for tide cycle calculations
-Phi = 2*pi*phase/tidalDay;  % Phase diff offset
-T = 4*pi/tidalDay;          % Freq match to daily tides
-L = 4*pi/t1;                % Freq match to seasonal tides
+Phi = 2*pi*phase/tidalDay;              % Phase diff offset
+
+% T and L spread a sine wave to repeat twice over the length of a tidal day 
+% and lunar cycle respectively. Both are in hours.
+T = 4*pi/tidalDay;                      % Freq match to daily tides
+L = 4*pi/t1;                            % Freq match to seasonal tides
+
+sPhi = seaonalStartPhase*24;       % Seasonal phase offset
     
-% Daily tidal series, median/spring/neap
+% Daily tidal series, median/spring/neap. t is time in hours.
 tideDailyMedian = hM * sin(T*t+Phi);
-tideDailySping = hS * sin(T*t+Phi);
-tideDailyNeap = hN * sin(T*t+Phi);
+tideDailySping = hSAv * sin(T*t+Phi);
+tideDailyNeap = hNAv * sin(T*t+Phi);
 
 % Cut the first wave to ensure a peak first (stuff breaks if a trough is
 % first for some reason)
@@ -56,10 +68,19 @@ for p=[1:highSeaInds(1)]
         tideDaily(p)=0;
 end
     
-% Create a seasonal variation wave
-tideVariation = (1-hN/hM) * (sin(L*t))+1;
+ratioSprAvgMean = hSMx/hSAv;
+ratioSprMaxSprAvg = hSAv/hM;
+
+disp("ratios: SprAvg/Mean:"+ratioSprAvgMean+" SprMax/SprAvg:"+...
+    ratioSprMaxSprAvg)
+
+% Create a seasonal variation wave which itself varies every other cycle
+tideSemiVar = semiSpringEffect * (1-ratioSprAvgMean) *...
+    (sin(0.5*L*(t+sPhi))) +1;
+tideVariation = (1-ratioSprMaxSprAvg) * (sin(L*(t+sPhi))) +1 ;
+
 % Scale daily wave by seasonal variation wave
-seaH = tideDaily .* tideVariation;
+seaH = tideDaily .* tideVariation .* tideSemiVar;
     
 
 %% 	Setting up lagoon height

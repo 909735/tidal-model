@@ -10,9 +10,11 @@
 %   energy - without the hot air (MacKay D, 2008.).
 
 % Setup
-
+clc
+Config;
+ 
 % Import station data, keep numbers, find no of stations
-stations = importdata('StationData.csv');
+stations = importdata(dataFile);
 stationData = stations.data;
 numStations = size(stationData,1);
 
@@ -23,7 +25,7 @@ dataMWh = [];           % MWh data store
 dataMWhTotal = 0;       % MWh total data store
 
 % Start figures
-figure(1); clf(1);
+figMulti = figure(1); clf(1);
 title('Combined station output')
 ylabel('power out (MW)')
 xlabel('time (hrs)')
@@ -53,3 +55,7 @@ for stationNo=[1:numStations]
 end
 
 plot(t,dataMWTotal,'-k','LineWidth',2)
+
+% Save fig
+fullPath = figPath+figPrefix+"_Len"+endDayGraph+"sum.png";
+exportgraphics(figMulti,fullPath,'Resolution',300)

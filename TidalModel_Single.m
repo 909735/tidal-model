@@ -12,7 +12,7 @@
 clc
 
 % Data entry
-stationNo = 1;
+stationNo = 10;
 
 % Initialise data storage
 dataMW = [];      % Power out data store

@@ -19,7 +19,6 @@ yBotDH = min(dHGrph);
 yTopPower = max(powerGrph)-txtSpaceY*0.5;
 yBotPower = min(powerGrph)+txtSpaceY*0.5;
 
-
 %% Figures
 
 % Fig 1
@@ -27,12 +26,12 @@ figSingle = figure(figNo); clf(figSingle)
 
 % Subplot 1 - Lagoon level for site with dashed sea level
 subplot(3,1,1)
-plot(tGrph,seaHGrph,'r-')
+plot(tim,seaHGrph,'r-')
 title('Water height')
 ylabel('h (m)')
-xlabel('t (hrs)')
+xlabel(timLab)
 grid on, hold on
-plot(tGrph,lagHGrph,'b','LineWidth',1.5)
+plot(tim,lagHGrph,'b','LineWidth',1.5)
 %scatter(t(lowLagInds(4)),lowLags(4),'*m')
 %scatter(t(lowLagInds(5)),lowLags(5),'*m')
 legend('Sea height','Lagoon height')
@@ -41,18 +40,17 @@ legend('Sea height','Lagoon height')
 subplot(3,1,2)
 %plot(datum(:,1),datum(:,2),'k-.','LineWidth',1)
 grid on, hold on
-plot(tGrph,dHGrph,'k','LineWidth',1.5)
+plot(tim,dHGrph,'k','LineWidth',1.5)
 ylabel('dh (m)')
-xlabel('t (hrs)')
+xlabel(timLab)
 title('Lagoon-sea height difference')
-
 
 % Subplot 3 - Power output actual
 subplot(3,1,3)
-plot(tGrph,powerGrph,'r','LineWidth',1.5)
+plot(tim,powerGrph,'r','LineWidth',1.5)
 title('Power output')
 ylabel('P (MW)')
-xlabel('t (hrs)')
+xlabel(timLab)
 grid on, hold on
 dispMWh = round(WOutC/1000);
 txt1 = 'Total: '+string(dispMWh)+'GWh';
@@ -63,9 +61,13 @@ txt = txt1+'    '+txt2+'    '+txt3;
 text(xLft, yTopPower, txt, 'FontSize',txtSize,...
     'HorizontalAlignment','left')
 
-% Save fig 1
-fullPath = figPath+figPrefix+"Flow"+string(flowTurbine)+" Hold"...
-    +string(figHolding)+" Stat"+string(sNo)+".png";
+% Save figure
+fullPath = figPath+figPrefix+"_Len"+endDayGraph+"_sNo"+sNo+".png";
 exportgraphics(figSingle,fullPath,'Resolution',300)
+
+% Close if needed
+if figCloseOnFin==1
+    close(figNo);
+end
 
 
